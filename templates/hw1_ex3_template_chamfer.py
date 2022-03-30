@@ -71,10 +71,8 @@ def chamfer_algorithm(edge_map):
         # the original picture is displayed
         distance_map = np.flipud(distance_map)
         distance_map = np.fliplr(distance_map)
-        #plt.imshow(distance_map)
 
     return distance_map
-
 
 # load shapes
 shapes = glob.glob(os.path.join('shapes', '*.png'))
@@ -83,7 +81,7 @@ shapes = glob.glob(os.path.join('shapes', '*.png'))
 for i, shape in enumerate(shapes):
     # load the edge map
     edge_map = img.imread(shape)
-
+    # get the distance map of an edge map with the chamfer function
     distance_map = chamfer_algorithm(edge_map)
 
     # the top row of the plots should be the edge maps, and on the bottom the corresponding distance maps
