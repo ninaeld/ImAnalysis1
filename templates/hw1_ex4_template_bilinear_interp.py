@@ -10,11 +10,7 @@ def test_interp():
     y = np.array([0.2, 0.4, 0.6, 0.4, 0.6, 0.8, 1.0, 1.1])
     x_new = np.array((0.5, 2.3, 3, 5.45))
     y_new_solution = np.array([0.2, 0.46, 0.6, 0.69])
-    print("This is the new solution:")
-    print(y_new_solution)
     y_new_result = interp(y, x, x_new)
-    print("This is the new result")
-    print(y_new_result)
     np.testing.assert_almost_equal(y_new_solution, y_new_result)
 
 
@@ -100,7 +96,16 @@ def interp_1D(signal, scale_factor):
     #   signal_interp: Interpolated 1D signal, numpy array
 
     ################### PLEASE FILL IN THIS PART ###############################
+    #get the length of the signal
+    length = np.prod(signal.shape)
+    # create an x value array for the signal
+    # start at 1 until length + 1
+    x_values = np.arange(1, length+1)
 
+    # create new x values with a array
+    x_new = np.linspace(1, length, num=round(length*scale_factor))
+
+    signal_interp = interp(signal, x_values, x_new)
 
     return signal_interp
 
@@ -136,11 +141,11 @@ print('Testing test_interp()...')
 test_interp()
 print('done.')
 
-"""print('Testing interp_1D()....')
+print('Testing interp_1D()....')
 test_interp_1D()
 print('done.')
 
-print('Testing interp_2D()....')
+"""print('Testing interp_2D()....')
 test_interp_2D()
 print('done.')"""
 
