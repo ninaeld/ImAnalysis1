@@ -2,7 +2,6 @@ import sys, os
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def test_interp():
     # Tests the interp() function with a known input and output
     # Leads to error if test fails
@@ -11,7 +10,11 @@ def test_interp():
     y = np.array([0.2, 0.4, 0.6, 0.4, 0.6, 0.8, 1.0, 1.1])
     x_new = np.array((0.5, 2.3, 3, 5.45))
     y_new_solution = np.array([0.2, 0.46, 0.6, 0.69])
+    print("This is the new solution:")
+    print(y_new_solution)
     y_new_result = interp(y, x, x_new)
+    print("This is the new result")
+    print(y_new_result)
     np.testing.assert_almost_equal(y_new_solution, y_new_result)
 
 
@@ -60,11 +63,34 @@ def interp(y_vals, x_vals, x_new):
 
     ################### PLEASE FILL IN THIS PART ###############################
 
+    #array for y_new values the same size as x_new
+    length = np.prod(x_new.shape)
+    y_new = np.empty(length)
+    #go through each x_new
+    for i in range(length):
+        #check if x_new is under the range
+        if x_new[i] <= x_vals[0]:
+            y_new[i] = y_vals[0]
+        #check if x_new if over the range
+        elif x_new[i] >= x_vals[x_vals.shape[0]-1]:
+            y_new[i] = y_vals[y_vals.shape[0]-1]
+        #if not calculate the y new value
+        else:
+            # look for the two values below and above x
+            for j in range(1, x_vals.shape[0]):
+                if x_new[i] <= x_vals[j]:
+                    x0 = x_vals[j-1]
+                    y0 = y_vals[j-1]
+                    x1 = x_vals[j]
+                    y1 = y_vals[j]
+                    break
+            y_new[i] = y0 * (1-((x_new[i]-x0)/(x1 - x0))) + y1 * ((x_new[i]-x0)/(x1-x0))
+
     return y_new
 
 
 def interp_1D(signal, scale_factor):
-    # Linearly interpolates one dimensional signal by a given saling fcator
+    # Linearly interpolates one dimensional signal by a given scaling factor
     #
     # Inputs:
     #   signal: A one dimensional signal to be samples from, numpy array
@@ -74,6 +100,7 @@ def interp_1D(signal, scale_factor):
     #   signal_interp: Interpolated 1D signal, numpy array
 
     ################### PLEASE FILL IN THIS PART ###############################
+
 
     return signal_interp
 
@@ -109,15 +136,15 @@ print('Testing test_interp()...')
 test_interp()
 print('done.')
 
-print('Testing interp_1D()....')
+"""print('Testing interp_1D()....')
 test_interp_1D()
 print('done.')
 
 print('Testing interp_2D()....')
 test_interp_2D()
-print('done.')
+print('done.')"""
 
-print('Testing bilinear interpolation of an image...')
+"""print('Testing bilinear interpolation of an image...')
 # Read image as a matrix, get image shapes before and after interpolation
 img = (plt.imread(filename)).astype('float')  # need to convert to float
 in_shape = img.shape  # Input image shape
@@ -144,4 +171,4 @@ plt.title('Rescaled by {:2f}'.format(scale_factor))
 print('Do not forget to close the plot window --- it happens:) ')
 plt.show()
 
-print('done.')
+print('done.')"""
