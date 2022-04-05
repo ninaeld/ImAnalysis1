@@ -122,7 +122,22 @@ def interp_2D(img, scale_factor):
     #   img_interp: interpolated image with the expected output shape, numpy array
 
     ################### PLEASE FILL IN THIS PART ###############################
+    length = round(img.shape[1]*scale_factor)
+    first_matrix = np.empty((0, length))
 
+    for row in img:
+        r = interp_1D(row, scale_factor)
+        first_matrix = np.append(first_matrix, np.array([r]), axis=0)
+
+
+    transposed_matrix = first_matrix.transpose()
+    this_length = round(transposed_matrix.shape[1]*scale_factor)
+    second_matrix = np.empty((0,this_length))
+    for row in transposed_matrix:
+        r = interp_1D(row, scale_factor)
+        second_matrix = np.append(second_matrix, np.array([r]), axis=0)
+
+    img_interp = second_matrix.transpose()
     return img_interp
 
 
@@ -145,11 +160,11 @@ print('Testing interp_1D()....')
 test_interp_1D()
 print('done.')
 
-"""print('Testing interp_2D()....')
+print('Testing interp_2D()....')
 test_interp_2D()
-print('done.')"""
+print('done.')
 
-"""print('Testing bilinear interpolation of an image...')
+print('Testing bilinear interpolation of an image...')
 # Read image as a matrix, get image shapes before and after interpolation
 img = (plt.imread(filename)).astype('float')  # need to convert to float
 in_shape = img.shape  # Input image shape
@@ -176,4 +191,4 @@ plt.title('Rescaled by {:2f}'.format(scale_factor))
 print('Do not forget to close the plot window --- it happens:) ')
 plt.show()
 
-print('done.')"""
+print('done.')
