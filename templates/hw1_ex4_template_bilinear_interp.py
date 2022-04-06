@@ -122,28 +122,47 @@ def interp_2D(img, scale_factor):
     #   img_interp: interpolated image with the expected output shape, numpy array
 
     ################### PLEASE FILL IN THIS PART ###############################
+    #get the length of the rescaled array
     length = round(img.shape[1]*scale_factor)
+    #create an empty array of that length
     first_matrix = np.empty((0, length))
 
+    #interpolate each row and append it to the new matrix
     for row in img:
         r = interp_1D(row, scale_factor)
         first_matrix = np.append(first_matrix, np.array([r]), axis=0)
-
-
+    #transpose the matrix so it can be iterated over the rows
     transposed_matrix = first_matrix.transpose()
+    #the length of the new matrix is calculated
     this_length = round(transposed_matrix.shape[1]*scale_factor)
     second_matrix = np.empty((0,this_length))
+    #again interpolate each row and append it to the new matrix
     for row in transposed_matrix:
         r = interp_1D(row, scale_factor)
         second_matrix = np.append(second_matrix, np.array([r]), axis=0)
-
+    #transpose the new matrix such that it gets its original orientation
     img_interp = second_matrix.transpose()
     return img_interp
 
+def check_dimension(img, scale_factor):
+    if ((len(img.shape)) == 2):
+        #apply the interpolation for a grey image
+        return interp_2D(img, scale_factor)
+    elif ((len(img.shape)) == 3):
+        #take apart each colour matrix and interpolate it separately
+        red_values = interp_2D(img[:,:, 0], scale_factor)
+        green_values = interp_2D(img[:,:,1], scale_factor)
+        blue_values = interp_2D(img[:,:,2], scale_factor)
+        #stack the colours and return the image
+        return np.dstack((red_values, green_values, blue_values))
+
+    else:
+        print("Error: the image is of wrong dimension")
+        return 0
 
 # set arguments
-filename = 'bird.jpg'
-# filename = 'butterfly.jpg'
+#filename = 'bird.jpg'
+filename = 'butterfly.jpg'
 # filename = 'monkey_face.jpg'
 scale_factor = 1.5  # Scaling factor
 
@@ -170,7 +189,7 @@ img = (plt.imread(filename)).astype('float')  # need to convert to float
 in_shape = img.shape  # Input image shape
 
 # Apply bilinear interpolation
-img_int = interp_2D(img, scale_factor)
+img_int = check_dimension(img, scale_factor)
 print('done.')
 
 # Now, we save the interpolated image and show the results
@@ -183,10 +202,10 @@ plt.close()
 
 plt.figure()
 plt.subplot(1, 2, 1)
-plt.imshow(img.astype('uint8'))
+plt.imshow(img.astype('uint8'), cmap="gray")
 plt.title('Original')
 plt.subplot(1, 2, 2)
-plt.imshow(img_int.astype('uint8'))
+plt.imshow(img_int.astype('uint8'), cmap="gray")
 plt.title('Rescaled by {:2f}'.format(scale_factor))
 print('Do not forget to close the plot window --- it happens:) ')
 plt.show()
